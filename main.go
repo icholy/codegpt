@@ -29,7 +29,7 @@ func main() {
 	}
 	// make request
 	client := openai.NewClient(key)
-	model := openai.CodexCodeDavinci002
+	model := "code-davinci-edit-001"
 	edits, err := client.Edits(
 		context.Background(),
 		openai.EditsRequest{
