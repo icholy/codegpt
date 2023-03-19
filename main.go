@@ -54,7 +54,7 @@ func main() {
 		context.Background(),
 		openai.EditsRequest{
 			Model:       &model,
-			Input:       string(input),
+			Input:       input,
 			Instruction: strings.Join(instructions, " "),
 			N:           1,
 			Temperature: float32(temp),
