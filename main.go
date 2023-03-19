@@ -38,9 +38,14 @@ func main() {
 		log.Fatal("OPENAI_API_KEY environment variable not set")
 	}
 	// read stdin
-	input, err := io.ReadAll(os.Stdin)
-	if err != nil {
-		log.Fatal(err)
+	var input string
+	stat, _ := os.Stdin.Stat()
+	if stat.Mode()&os.ModeCharDevice == 0 {
+		data, err := io.ReadAll(os.Stdin)
+		if err != nil {
+			log.Fatal(err)
+		}
+		input = string(data)
 	}
 	// make request
 	client := openai.NewClient(key)
