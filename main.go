@@ -16,7 +16,7 @@ func main() {
 	var temp, topP float64
 	var filename string
 	flag.Float64Var(&temp, "temp", 0, "temperature")
-	flag.Float64Var(&topP, "top_p", 0, "TopP")
+	flag.Float64Var(&topP, "top_p", 1, "TopP")
 	flag.StringVar(&filename, "i", "", "instructions file")
 	flag.Parse()
 	// instructions
