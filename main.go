@@ -14,9 +14,24 @@ import (
 
 func main() {
 	var temp, topP float64
+	var filename string
 	flag.Float64Var(&temp, "temp", 0, "temperature")
 	flag.Float64Var(&topP, "top_p", 0, "TopP")
+	flag.StringVar(&filename, "i", "", "instructions file")
 	flag.Parse()
+	// instructions
+	var instructions []string
+	if filename != "" {
+		data, err := os.ReadFile(filename)
+		if err != nil {
+			log.Fatal(err)
+		}
+		instructions = append(instructions, string(data))
+	}
+	instructions = append(instructions, flag.Args()...)
+	if len(instructions) == 0 {
+		log.Fatal("no instructions")
+	}
 	// Fetch the OpenAI API key from the environment
 	key := os.Getenv("OPENAI_API_KEY")
 	if key == "" {
@@ -35,7 +50,7 @@ func main() {
 		openai.EditsRequest{
 			Model:       &model,
 			Input:       string(input),
-			Instruction: strings.Join(flag.Args(), " "),
+			Instruction: strings.Join(instructions, " "),
 			N:           1,
 			Temperature: float32(temp),
 			TopP:        float32(topP),
