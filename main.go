@@ -18,9 +18,9 @@ func main() {
 	var temp, topP float64
 	var filename string
 	flag.BoolVar(&force, "f", false, "force")
-	flag.Float64Var(&temp, "temp", 0.6, "temperature")
-	flag.Float64Var(&topP, "top_p", 1, "TopP")
-	flag.IntVar(&maxtokens, "tokens", 4000, "max tokens")
+	flag.Float64Var(&temp, "t", 0.6, "temperature")
+	flag.Float64Var(&topP, "p", 1, "TopP")
+	flag.IntVar(&maxtokens, "max", 4000, "max tokens")
 	flag.StringVar(&filename, "i", "", "instructions file")
 	flag.Parse()
 	// instructions
