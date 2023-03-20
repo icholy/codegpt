@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"flag"
 	"fmt"
@@ -13,10 +14,11 @@ import (
 )
 
 func main() {
-	var force bool
+	var force, raw bool
 	var maxtokens int
 	var temp, topP float64
 	var filename string
+	flag.BoolVar(&raw, "r", false, "raw output")
 	flag.BoolVar(&force, "f", false, "force")
 	flag.Float64Var(&temp, "t", 0.6, "temperature")
 	flag.Float64Var(&topP, "p", 1, "TopP")
@@ -72,8 +74,8 @@ func main() {
 					Content: strings.Join(
 						[]string{
 							"You are a programming assistant.",
-							"All requests be formatted with a set of instructions followed by a fenced code block.",
-							"You will apply the instructions to the code block and output the modified code without a fence around it.",
+							"All requests be formatted with a set of instructions followed by a fenced block of code.",
+							"You will apply the instructions to the code.",
 						},
 						" ",
 					),
@@ -96,7 +98,31 @@ func main() {
 		log.Fatal("no responses")
 	}
 	for _, c := range completions.Choices {
-		fmt.Print(c.Message)
+		if raw {
+			fmt.Print(c.Message.Content)
+		} else {
+			fmt.Print(ExtractCode(c.Message.Content))
+		}
 		break
 	}
+}
+
+func ExtractCode(s string) string {
+	var lines []string
+	sc := bufio.NewScanner(strings.NewReader(s))
+	var inFence bool
+	for sc.Scan() {
+		line := sc.Text()
+		if strings.HasPrefix(line, "```") {
+			if inFence {
+				break
+			}
+			inFence = true
+			continue
+		}
+		if inFence {
+			lines = append(lines, line)
+		}
+	}
+	return strings.Join(lines, "\n")
 }
