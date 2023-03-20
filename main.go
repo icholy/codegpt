@@ -15,14 +15,14 @@ import (
 
 func main() {
 	var force, raw bool
-	var maxtokens int
+	var max int
 	var temp, topP float64
 	var filename string
 	flag.BoolVar(&raw, "r", false, "raw output")
 	flag.BoolVar(&force, "f", false, "force")
 	flag.Float64Var(&temp, "t", 0.6, "temperature")
 	flag.Float64Var(&topP, "p", 1, "TopP")
-	flag.IntVar(&maxtokens, "max", 4000, "max tokens")
+	flag.IntVar(&max, "max", 4000, "max tokens")
 	flag.StringVar(&filename, "i", "", "instructions file")
 	flag.Parse()
 	// instructions
@@ -53,13 +53,13 @@ func main() {
 		}
 		prompt = append(prompt, string(code))
 		// make sure we have enough tokens to at least replace the previous code
-		if len(code) > maxtokens {
-			log.Fatal("-tokens isn't large enough for the provided code")
+		if len(code) > max {
+			log.Fatalf("-max isn't large enough for the provided code: %d < %d", len(code), max)
 		}
 	}
 	prompt = append(prompt, "```")
 	// sanity check the tokens
-	if n := len(strings.Join(prompt, " ")) + maxtokens; n > 8192 && !force {
+	if n := len(strings.Join(prompt, " ")) + max; n > 8192 && !force {
 		log.Fatal("-tokens + len(prompt) exceeds the model's limit of 8192")
 	}
 	// make request
@@ -85,7 +85,7 @@ func main() {
 					Content: strings.Join(prompt, "\n"),
 				},
 			},
-			MaxTokens:   maxtokens,
+			MaxTokens:   max,
 			Temperature: float32(temp),
 			TopP:        float32(topP),
 			N:           1,
