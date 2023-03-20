@@ -5,11 +5,15 @@
 Usage:
 
 ```
-cat file.go | codegpt switch from testify to gotest.tools assertions
+# use in a pipe
+cat file.go | codegpt "switch from testify to gotest.tools assertions"
+
+# update a file in place
+$ codegpt -w -s test.spec.js "convert to chai assertions"
 ```
 
 Vim Usage:
 
 ```
-:%!codegpt add doc comments
+:%!codegpt "add doc comments"
 ```
