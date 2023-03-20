@@ -124,5 +124,9 @@ func ExtractCode(s string) string {
 			lines = append(lines, line)
 		}
 	}
+	// better than returning nothing
+	if len(lines) == 0 {
+		return s
+	}
 	return strings.Join(lines, "\n")
 }
