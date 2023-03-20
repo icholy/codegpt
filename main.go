@@ -44,12 +44,13 @@ func main() {
 		}
 		instructions = append(instructions, string(data))
 	}
-	instructions = append(instructions, strings.Join(flag.Args(), " "))
+	if flag.NArg() > 0 {
+		instructions = append(instructions, strings.Join(flag.Args(), " "))
+	}
 	if len(instructions) == 0 {
 		log.Fatal("no instructions")
 	}
 	var code string
-
 	if sfile != "" {
 		data, err := os.ReadFile(sfile)
 		if err != nil {
