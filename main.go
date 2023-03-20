@@ -91,6 +91,10 @@ func EditCode(instructions string, code string) (string, error) {
 	// add instructions to prompt
 	prompt = append(prompt, instructions)
 	prompt = append(prompt, "```", code, "```")
+	// auto set max
+	if max == -1 {
+		max = 8192 - EstimateTokens(len(prompt))
+	}
 	// sanity check the tokens
 	if tok := EstimateTokens(len(code)); tok > max {
 		log.Fatalf("MaxTokens isn't large enough for the provided code: Len=%d EstimatedTokens=%d MaxTokens=%d", len(code), tok, max)
