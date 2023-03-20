@@ -53,14 +53,14 @@ func main() {
 		}
 		prompt = append(prompt, string(code))
 		// make sure we have enough tokens to at least replace the previous code
-		if len(code) > max {
-			log.Fatalf("-max isn't large enough for the provided code: %d < %d", len(code), max)
+		if tok := EstimateTokens(len(code)); tok > max {
+			log.Fatalf("-max isn't large enough for the provided code: Len=%d EstimatedTokens=%d CodeLen=%d", len(code), tok, max)
 		}
 	}
 	prompt = append(prompt, "```")
 	// sanity check the tokens
-	if n := len(strings.Join(prompt, " ")) + max; n > 8192 && !force {
-		log.Fatal("-tokens + len(prompt) exceeds the model's limit of 8192")
+	if n := EstimateTokens(len(strings.Join(prompt, " "))) + max; n > 8192 && !force {
+		log.Fatal("-tokens + EstimatedTokens(len(prompt)) exceeds the model's limit of 8192")
 	}
 	// make request
 	client := openai.NewClient(key)
@@ -105,6 +105,10 @@ func main() {
 		}
 		break
 	}
+}
+
+func EstimateTokens(bytes int) int {
+	return int(float64(bytes) / 4)
 }
 
 func ExtractCode(s string) string {
