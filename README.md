@@ -1,6 +1,6 @@
 # CodeGPT
 
-> Pipe STDIN through the OpenAI /v1/edit api
+> Pipe STDIN through GPT-4
 
 Usage:
 
